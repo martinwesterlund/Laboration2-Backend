@@ -9,8 +9,6 @@ const resetRouter = require('./resetRouter.js')
 
 app.use(express.json())
 
-
-// app.use('/', router)
 app.use('/', mainRouter)
 app.use('/books', bookRouter)
 app.use('/authors', authorRouter)

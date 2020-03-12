@@ -15,10 +15,10 @@ connection.connect()
 bookRouter.route('/')
     // Get all books and their authors
     .get((req, res) => {
-        connection.query(`SELECT book_name AS "Book title", CONCAT(first_name, ' ', last_name) AS Author
+        connection.query(`SELECT book_name AS "Book title", CONCAT(first_name, ' ', last_name) AS Author, pages AS Pages
         FROM books
-        JOIN author_books ON books.id = author_books.book_id
-        JOIN authors ON authors.id = author_books.author_id
+        LEFT JOIN author_books ON books.id = author_books.book_id
+        LEFT JOIN authors ON authors.id = author_books.author_id
         WHERE 1 ORDER BY book_name`, (err, result, fields) => {
             if (err) throw error
             res.json(result)

@@ -44,9 +44,9 @@ authorRouter.route('/')
         // Get one author and his/her books
         .get((req, res) => {
             let query = `SELECT first_name AS "First name", last_name AS "Last name", book_name AS "Book title"
-            FROM books
-            JOIN author_books ON books.id = author_books.book_id
-            JOIN authors ON authors.id = author_books.author_id
+            FROM authors
+            LEFT JOIN author_books ON authors.id = author_books.author_id
+            LEFT JOIN books ON books.id = author_books.book_id
             WHERE authors.id=` + connection.escape(req.params.id)
             connection.query(query, (err, result, fields) => {
                 if (err) throw err

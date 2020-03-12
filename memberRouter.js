@@ -41,12 +41,13 @@ memberRouter.route('/')
         })
     
     memberRouter.route('/:id')
-        // Get one member and his/her loande books
+        // Get one member and his/her loaned books
         .get((req, res) => {
-            let query = `SELECT first_name AS "First name", last_name AS "Last name", book_name AS "Borrowed book", late_fees AS "Late fees"
-            FROM books
-            JOIN members_books ON books.id = members_books.book_id
-            JOIN members ON members.id = members_books.member_id
+            let query = 
+            `SELECT first_name AS "First name", last_name AS "Last name", book_name AS "Borrowed book", late_fees AS "Late fees"
+            FROM members
+            LEFT JOIN members_books ON members.id = members_books.member_id
+            LEFT JOIN books ON books.id = members_books.book_id
             WHERE members.id= ${connection.escape(req.params.id)} ORDER BY last_name`
             connection.query(query, (err, result, fields) => {
                 if (err) throw err

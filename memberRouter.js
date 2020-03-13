@@ -10,6 +10,7 @@ let connection = mysql.createConnection({
     database: 'library'
 })
 
+
 connection.connect()
 
 memberRouter.route('/')
@@ -44,7 +45,7 @@ memberRouter.route('/')
         // Get one member and his/her loaned books
         .get((req, res) => {
             let query = 
-            `SELECT first_name AS "First name", last_name AS "Last name", book_name AS "Borrowed book", late_fees AS "Late fees"
+            `SELECT first_name AS "First name", last_name AS "Last name", GROUP_CONCAT(book_name) AS "Borrowed book(s)", late_fees AS "Late fees"
             FROM members
             LEFT JOIN members_books ON members.id = members_books.member_id
             LEFT JOIN books ON books.id = members_books.book_id

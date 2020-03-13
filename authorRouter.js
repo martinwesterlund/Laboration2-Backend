@@ -43,11 +43,11 @@ authorRouter.route('/')
     authorRouter.route('/:id')
         // Get one author and his/her books
         .get((req, res) => {
-            let query = `SELECT first_name AS "First name", last_name AS "Last name", book_name AS "Book title"
+            let query = `SELECT first_name AS "First name", last_name AS "Last name", GROUP_CONCAT(book_name) AS "Book titles"
             FROM authors
             LEFT JOIN author_books ON authors.id = author_books.author_id
             LEFT JOIN books ON books.id = author_books.book_id
-            WHERE authors.id=` + connection.escape(req.params.id)
+            WHERE authors.id=${connection.escape(req.params.id)} GROUP BY first_name`
             connection.query(query, (err, result, fields) => {
                 if (err) throw err
                 res.json(result)

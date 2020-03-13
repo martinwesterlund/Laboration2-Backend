@@ -15,11 +15,11 @@ connection.connect()
 bookRouter.route('/')
     // Get all books and their authors
     .get((req, res) => {
-        connection.query(`SELECT book_name AS "Book title", CONCAT(first_name, ' ', last_name) AS Author, pages AS Pages
+        connection.query(`SELECT book_name AS "Book title", GROUP_CONCAT(CONCAT(first_name, ' ', last_name)) AS "Author(s)", GROUP_CONCAT(DISTINCT pages) AS Pages
         FROM books
         LEFT JOIN author_books ON books.id = author_books.book_id
         LEFT JOIN authors ON authors.id = author_books.author_id
-        WHERE 1 ORDER BY book_name`, (err, result, fields) => {
+        WHERE 1 GROUP BY book_name ORDER BY book_name`, (err, result, fields) => {
             if (err) throw error
             res.json(result)
         })
@@ -47,11 +47,12 @@ bookRouter.route('/')
 bookRouter.route('/:id')
     // Get one book and its author(s)
     .get((req, res) => {
-        let query = `SELECT book_name AS "Book title", CONCAT(first_name, ' ', last_name) AS Author
+        let query = `SELECT book_name AS "Book title", GROUP_CONCAT(CONCAT(first_name, ' ', last_name)) AS Author
         FROM books
         JOIN author_books ON books.id = author_books.book_id
         JOIN authors ON authors.id = author_books.author_id
-        WHERE books.id=` + connection.escape(req.params.id)
+        WHERE books.id= ${connection.escape(req.params.id)}
+        GROUP BY book_name` 
         connection.query(query, (err, result, fields) => {
             if (err) throw err
             res.json(result)
